@@ -12,7 +12,7 @@ By default the plugin outputs all share buttons after the_content (priority 999)
 ####Change output locations.
 
 ```php
-add_filter( 'wpssb_options', ‘change_share_button_output’);
+add_filter( 'wpssb_options', 'change_share_button_output');
 
 function change_share_button_output( $options )
 {
