@@ -16,9 +16,9 @@ add_filter( 'wpssb_options', ‘change_share_button_output’);
 
 function change_share_button_output( $options )
 {
-	//Override output locations with the hook ‘the_footer’
-	$options[‘output_locations’] = array(
-		‘the_footer’
+	//Override output locations with the hook 'the_footer'
+	$options['output_locations'] = array(
+		'the_footer'
 	);
 
 	return $options;
