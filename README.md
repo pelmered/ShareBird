@@ -68,4 +68,4 @@ To get a started with your template, copy the template from ` /tempates/default.
 
 ####Change CSS output
 
-Comming soon
+Coming soon
