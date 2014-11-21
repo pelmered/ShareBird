@@ -29,15 +29,7 @@ function change_share_button_output( $options )
 
 First remove the standard output
 ```php
-add_filter( 'wpssb_options', ‘change_share_button_output’);
-
-function change_share_button_output( $options )
-{
-	//Override output locations with the hook ‘the_footer’
-	$options[‘output_locations’] = array();
-
-	return $options;
-}
+add_filter( 'wpssb_default_output', '__return_false');
 ```
 
 And then add this code where ever you want in your template
@@ -54,9 +46,9 @@ add_filter( 'wpssb_options', ‘change_share_button_output’);
 function change_share_button_output( $options )
 {
 	//Remove LinkedIn
-	unset($options[‘buttons’][‘linkedin’]);
+	unset($options['buttons']['linkedin']);
 	//Remove Google Plus
-	unset($options[‘buttons’][‘linkedin’]);
+	unset($options['buttons']['googleplus']);
 
 	return $options;
 }
