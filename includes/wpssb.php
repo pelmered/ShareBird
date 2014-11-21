@@ -50,17 +50,17 @@ class WP_Simple_Share_Buttons
     
     function __construct()
     {
-        $this->get_options();
-        
-        add_action('init', array($this, 'init'), 20);
+        /*
+         * Init plugin. We want to initialize the plugin after init to allow 
+         * plugins and themes to hook into the plugin before it is initialized
+         */
+        add_action('wp_loaded', array($this, 'plugin_init'), 1);
 
         // Load plugin text domain
         add_action('init', array($this, 'load_plugin_textdomain'));
-
-        if(is_admin())
-        {
-            
-        } 
+        
+        
+        add_filter( 'plugin_action_links_' . WP_SSB_PLUGIN_BASENAME, array( $this, 'action_links' ) );
     }
     
     /**
@@ -82,44 +82,26 @@ class WP_Simple_Share_Buttons
     }
 
     
-    function init()
+    function plugin_init()
     {
-
-        if (is_admin())
-        {
-            // Load public-facing style sheet and JavaScript.
-            add_action('wp_enqueue_scripts', array($this, 'enqueue_admin_styles'));
-            add_action('wp_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
-            
-        }
-        else 
-        {
-            // Load public-facing style sheet and JavaScript.
-            add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
-            add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-            
-           $this->output_buttons();
-            
-            
-        }
+        $this->get_options();
         
+        // Load public-facing style sheet and JavaScript.
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+
         require 'shortcodes.php';
+        
+        //Add after the_content
+        if( apply_filters( 'wpssb_default_output', true ) )
+        {
+            add_filter('the_content', array($this, 'add_after_content'), 999);
+        }
     }
     
-    function output_buttons()
+    function output_buttons( $template_name = 'default' )
     {
-        $locations = $this->get_location_options();
-        
-        
-        if( is_array($this->options['general']['output_locations']) )
-        {
-            foreach( $this->options['general']['output_locations'] AS $location )
-            {
-                add_filter('the_content', array($this, $locations[$location]), 999);
-                //call_user_func(array($this, $locations[$location]));
-            }
-        }
-        
+        include( $this->get_template( $template_name, $args = array() ) );
     }
     
     
@@ -127,41 +109,34 @@ class WP_Simple_Share_Buttons
     {
         if( empty( $this->options ) )
         {
-            $this->options = get_option($this->plugin_slug.'_plugin', $this->get_default_options());
+            $this->options = apply_filters( 'wpssb_options', 
+                array(
+                    'output_locations' => array(
+                        'after_the_content'
+                    ),
+                    'buttons' => array(
+                        'facebook' => array(
+                            'active' => 1,
+                            'basecount' => 0
+                        ),
+                        'twitter' => array(
+                            'active' => 1,
+                            'basecount' => 0
+                        ),
+                        'linkedin' => array(
+                            'active' => 1,
+                            'basecount' => 0
+                        ),
+                        'googleplus' => array(
+                            'active' => 1,
+                            'basecount' => 0
+                        )
+                    )
+                )
+            );
         }
 
         return $this->options;        
-    }
-    
-    function get_default_options()
-    {
-        return array(
-            'general' => array(
-                'output_locations' => array(
-                    'after_content'
-                )
-            ),
-            'facebook' => array(
-                'active' => 1,
-            ),
-            'twitter' => array(
-                'active' => 1,
-            ),
-            'linkedin' => array(
-                'active' => 1,
-            ),
-            'googleplus' => array(
-                'active' => 1,
-            )
-        );
-    }
-    
-    function get_location_options()
-    {
-        return array(
-            'after_content' => 'add_after_content',
-            'before_content' => 'add_before_content'
-        );
     }
     
     
@@ -180,7 +155,7 @@ class WP_Simple_Share_Buttons
 	$template = locate_template(
             array(
                 trailingslashit( $template_path ) . $template_name,
-                $template_name
+                //$template_name
             )
 	);
         
@@ -192,7 +167,8 @@ class WP_Simple_Share_Buttons
 	// Allow 3rd party plugin filter template file from their plugin
 	$template = apply_filters( 'wpssb_get_template', $template, $template_name, $args, $template_path, $default_path );
         
-        include( $template );
+        return $template;
+        
     }
     
     function add_before_content($content)
@@ -209,7 +185,7 @@ class WP_Simple_Share_Buttons
         if( is_single() ) 
         {
             ob_start();
-            $this->get_template();
+            $this->output_buttons();
             
             //Get output buffer and allow 3rd-party codes to filter HTML data
             $template = apply_filters( 'wpssb_template_html', ob_get_contents(), $pos, $content );
@@ -227,15 +203,15 @@ class WP_Simple_Share_Buttons
                 $content = $content.$template;
             }
         }
-
+        
         return $content;
     }
     
     function get_basecount( $type )
     {
-        if(isset($this->get_options()[$type]['base_count']))
+        if(isset($this->options['buttons'][$type]['basecount']))
         {
-            $basecount =  $this->get_options[$type]['base_count'];
+            $basecount =  $this->options['buttons'][$type]['basecount'];
         }
         else
         {
@@ -255,9 +231,9 @@ class WP_Simple_Share_Buttons
         wp_enqueue_script('simplesharebuttons', WP_SSB_PLUGIN_URL . 'assets/js/jquery.simplesharebuttons.js', array(), self::VERSION);
         
         wp_localize_script($this->plugin_slug . '-public-sctipts', 'wpssb_options', array(
-            'GooglePlusAPIProviderURI'     => WP_SSB_PLUGIN_URL.'includes/APIProviders/GooglePlus.php',
-            'ajax_url'                  => admin_url('/admin-ajax.php'),
-            //'search_products_nonce' 	=> wp_create_nonce("search-products"),
+            'GooglePlusAPIProviderURI'  => WP_SSB_PLUGIN_URL.'includes/APIProviders/GooglePlus.php',
+            'ajax_url'                  => admin_url('/admin-ajax.php'), //Not used
+            'get_count_nonce'           => wp_create_nonce("wpssb-get-count"), //Not used
         ));
     }
     
@@ -454,8 +430,6 @@ class WP_Simple_Share_Buttons
     public function action_links($links)
     {
         $plugin_links = array(
-            '<a href="' . admin_url('admin.php?page='.$this->plugin_slug) . '">' . __('Settings', $this->plugin_slug) . '</a>',
-            //'<a href="http://extendwp.com/">' . __( 'Docs', $this->plugin_slug ) . '</a>',
             '<a href="http://wordpress.org/plugins/wp-simple-share-buttons//">' . __('Info & Support', $this->plugin_slug) . '</a>',
         );
 

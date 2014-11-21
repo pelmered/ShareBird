@@ -33,16 +33,28 @@ if ( ! defined( 'WPINC' ) ) {
 
 $class_name = 'WP_Simple_Share_Buttons';
 
-if( !defined('WP_SSB_PLUGIN_NAME') && !defined('WP_SSB_PLUGIN_SLUG') && !defined('WP_SSB_PLUGIN_PATH') && !defined('WP_SSB_PLUGIN_URL'))
+if( !defined('WP_SSB_PLUGIN_NAME') )
 {
-    define('WP_SSB_PLUGIN_NAME', untrailingslashit(plugin_basename(__FILE__)));
+    define('WP_SSB_PLUGIN_NAME', 'WP Simple Share Buttons');
+}
+if( !defined('WP_SSB_PLUGIN_BASENAME'))
+{
+    define('WP_SSB_PLUGIN_BASENAME', untrailingslashit(plugin_basename(__FILE__)));
+}
+if( !defined('WP_SSB_PLUGIN_SLUG'))
+{
     define('WP_SSB_PLUGIN_SLUG', 'wp-simple-share-buttons');
-
+}
+if( !defined('WP_SSB_PLUGIN_PATH'))
+{
     define('WP_SSB_PLUGIN_PATH', plugin_dir_path( __FILE__ ));
+}
+if( !defined('WP_SSB_PLUGIN_URL'))
+{
     define('WP_SSB_PLUGIN_URL', plugins_url('', __FILE__).'/');
 }
 
-add_action( 'plugins_loaded', 'WC_Pricefiles' );    
+add_action( 'plugins_loaded', 'WP_Simple_Share_Buttons' );    
 
 if( !class_exists( $class_name ) && !function_exists( $class_name ))
 {

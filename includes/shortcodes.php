@@ -17,7 +17,7 @@ if( !function_exists('WP_Simple_Share_Buttons_Shortcode'))
         
 	ob_start();
         
-        WP_Simple_Share_Buttons()->get_template('default');
+        WP_Simple_Share_Buttons()->output_buttons('template');
         
 	return ob_get_clean();
     }

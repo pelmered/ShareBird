@@ -14,6 +14,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 //Cleanup all registerd options
-require_once 'index.php';
+require_once 'wp-simple-share-buttons.php';
 
-delete_option(PLUGIN_BOILERPLATE_PLUGIN_SLUG.'_options');
+delete_option(WP_SSB_PLUGIN_SLUG.'_options');
