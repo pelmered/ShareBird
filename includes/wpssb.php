@@ -260,23 +260,6 @@ class WP_Simple_Share_Buttons
     {
         wp_enqueue_script($this->plugin_slug . '-admin-options-script', WP_SSB_PLUGIN_URL . 'assets/js/admin-options.js', array('jquery', 'chosen', 'ajax-chosen'), self::VERSION);
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     /**
      * Load the plugin text domain for translation.
@@ -407,7 +390,6 @@ class WP_Simple_Share_Buttons
      */
     private function single_activate()
     {
-        $this->init();
     }
 
     /**
