@@ -1,13 +1,4 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-//TODO
-//$options = get_option();
-
 $options = WP_Simple_Share_Buttons()->get_options();
 
 ?>
@@ -39,6 +30,3 @@ $options = WP_Simple_Share_Buttons()->get_options();
         </li>
     </ul>
 </div>
-
-
-

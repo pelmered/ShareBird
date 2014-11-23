@@ -10,8 +10,8 @@
  * Plugin Name: WP Simple Share Buttons
  * Plugin URI:  http://wordpress.org/plugins/wp-simple-share-buttons/
  * Description: SimpleShareButtons for WordPress.
- * Version:     0.1.0
- * Author:      Peter Elmered
+ * Version:     0.1.1
+ * Author:      Peter Elmered, khromov
  * Author URI:  http://elmered.com
  * Text Domain: wp-simple-share-buttons
  * Domain Path: /languages
@@ -65,7 +65,6 @@ if( !class_exists( $class_name ) && !function_exists( $class_name ))
         return WP_Simple_Share_Buttons::get_instance();
     }
 }
-
 
 
 // Register hooks that are fired when the plugin is activated, deactivated, and uninstalled, respectively.

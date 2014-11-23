@@ -13,7 +13,7 @@ class WP_Simple_Share_Buttons
      * @since    0.1.0
      * @var     string
      */
-    const VERSION = '0.1.0';
+    const VERSION = '0.1.1';
 
     /**
      * Unique identifier for your plugin.
@@ -73,7 +73,7 @@ class WP_Simple_Share_Buttons
     public static function get_instance()
     {
         // If the single instance hasn't been set, set it now.
-        if (null == self::$instance)
+        if (null === self::$instance)
         {
             self::$instance = new self;
         }
@@ -185,14 +185,13 @@ class WP_Simple_Share_Buttons
         if( is_single() ) 
         {
             ob_start();
+
             $this->output_buttons();
             
             //Get output buffer and allow 3rd-party codes to filter HTML data
-            $template = apply_filters( 'wpssb_template_html', ob_get_contents(), $pos, $content );
+            $template = apply_filters( 'wpssb_template_html', ob_get_clean(), $pos, $content );
             
-            ob_end_clean();
-            
-            if( $pos == 'before' ) 
+            if( $pos === 'before' )
             {   
                 //Prepend
                 $content = $template.$content;
