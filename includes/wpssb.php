@@ -54,12 +54,11 @@ class WP_Simple_Share_Buttons
          * Init plugin. We want to initialize the plugin after init to allow 
          * plugins and themes to hook into the plugin before it is initialized
          */
-        add_action('wp_loaded', array($this, 'plugin_init'), 1);
+        add_action('wp', array($this, 'plugin_init'), 1);
 
         // Load plugin text domain
         add_action('init', array($this, 'load_plugin_textdomain'));
-        
-        
+
         add_filter( 'plugin_action_links_' . WP_SSB_PLUGIN_BASENAME, array( $this, 'action_links' ) );
     }
     
@@ -81,21 +80,88 @@ class WP_Simple_Share_Buttons
         return self::$instance;         
     }
 
+    /**
+     * Wrapper for getting post title. Adds filters.
+     *
+     * @param $service
+     * @param int $id
+     * @return mixed|void
+     */
+    function get_post_title($service, $id = 0)
+    {
+        //General filter
+        $title_value = apply_filters("wpssb_post_title", get_the_title($id));
+
+        //Service-specific filter
+        return apply_filters("wpssb_{$service}_post_title", $title_value);
+    }
+
+    /**
+     * Wrapper for getting post author. Adds filters.
+     * TODO: get_the_author() works only in the loop. This is not great as share buttons may be used outside the main loop.
+     *
+     * @param $service
+     * @return mixed|void
+     */
+    function get_author($service)
+    {
+        //General filter
+        $author_value = apply_filters("wpssb_author", get_the_author());
+
+        //Service-specific filter
+        return apply_filters("wpssb_{$service}_author", $author_value);
+    }
     
     function plugin_init()
     {
-        $this->get_options();
+        $options = $this->get_options();
         
         // Load public-facing style sheet and JavaScript.
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 
         require 'shortcodes.php';
-        
-        //Add after the_content
-        if( apply_filters( 'wpssb_default_output', true ) )
+
+        // Don't perform any output on admin side
+        if(!is_admin())
         {
-            add_filter('the_content', array($this, 'add_after_content'), 999);
+            //Should we display output?
+            if($options['default_output'] === true)
+            {
+                //Which conditionals should we display the post for?
+                $display = false;
+                foreach($options['output_conditionals'] as $conditional)
+                {
+                    if(function_exists($conditional) && ($conditional() === true))
+                    {
+                        //Is this a conditional for a single post page? In that case, let's check allowed post types
+                        if(in_array($conditional, array('is_single', 'is_page', 'is_singular')))
+                        {
+                            //Is the post type amongst the allowed ones?
+                            $display = ($options['output_post_types'] === 'all' || (in_array(get_post_type(), $options['output_post_types']))) ? true : false;
+                            break;
+                        }
+                        else
+                        {
+                            $display = true;
+                            break;
+                        }
+                    }
+                }
+
+                //If conditionals match and it's the right post type
+                if($display)
+                {
+                    add_filter('the_content', array($this, 'add_to_content'), 999);
+
+                    //Hook on excerpt as well, if archive.
+                    //TODO: This is probably not a great solution as it's theme-dependent
+                    if(is_post_type_archive())
+                    {
+                        add_filter('get_the_excerpt', array($this, 'add_to_content'));
+                    }
+                }
+            }
         }
     }
     
@@ -103,47 +169,41 @@ class WP_Simple_Share_Buttons
     {
         include( $this->get_template( $template_name, $args = array() ) );
     }
-    
-    
+
+    /**
+     * Main function for getting options
+     *
+     * @return array|mixed|void
+     */
     function get_options()
     {
         if( empty( $this->options ) )
         {
-            $this->options = apply_filters( 'wpssb_options', 
+            $this->options = apply_filters( 'wpssb_options',
                 array(
-                    'output_locations' => array(
-                        'after_the_content'
-                    ),
-                    'buttons' => array(
-                        'facebook' => array(
-                            'active' => 1,
-                            'basecount' => 0
-                        ),
-                        'twitter' => array(
-                            'active' => 1,
-                            'basecount' => 0
-                        ),
-                        'linkedin' => array(
-                            'active' => 1,
-                            'basecount' => 0
-                        ),
-                        'googleplus' => array(
-                            'active' => 1,
-                            'basecount' => 0
-                        )
-                    )
+                    'default_output' => apply_filters( 'wpssb_default_output', true ),
+                    'output_conditionals' => apply_filters( 'wpssb_output_conditionals', array('is_front_page', 'is_home', 'is_single', 'is_page', 'is_post_type_archive', 'is_singular')),
+                    'output_post_types' => apply_filters( 'wpssb_output_post_types', array('post', 'page')),
+                    'output_positions' => apply_filters( 'wpssb_output_positions', array('after')), //before, after or both
+                    //TODO: This is ugly, can we fix it without making the hook more difficult to use?
+                    'buttons' =>  apply_filters( 'wpssb_buttons', array(
+                        'facebook' => true,
+                        'twitter' => true,
+                        'linkedin' => true,
+                        'googleplus' => true
+                    )),
                 )
             );
         }
 
-        return $this->options;        
+        return $this->options;
     }
-    
-    
+
+
     /**
-     * 
      * @param string $template_name
-     * @param type $args
+     * @param array $args
+     * @return mixed|string|void
      */
     function get_template( $template_name = 'default', $args = array() )
     {
@@ -151,56 +211,45 @@ class WP_Simple_Share_Buttons
         $template_path = 'wpssb/';
         $default_path = WP_SSB_PLUGIN_PATH . 'templates/';
 
-	// Look within passed path within the theme - this is priority
-	$template = locate_template(
-            array(
-                trailingslashit( $template_path ) . $template_name,
-                //$template_name
-            )
-	);
-        
-	// Get default template
-	if ( ! $template ) {
-            $template = $default_path . $template_name;
-	}
-        
-	// Allow 3rd party plugin filter template file from their plugin
-	$template = apply_filters( 'wpssb_get_template', $template, $template_name, $args, $template_path, $default_path );
+        // Look within passed path within the theme - this is priority
+        $template = locate_template(
+                array(
+                    trailingslashit( $template_path ) . $template_name,
+                    //$template_name
+                )
+        );
+
+        // Get default template
+        if ( ! $template ) {
+                $template = $default_path . $template_name;
+        }
+
+        // Allow 3rd party plugin filter template file from their plugin
+        $template = apply_filters( 'wpssb_get_template', $template, $template_name, $args, $template_path, $default_path );
         
         return $template;
-        
     }
-    
-    function add_before_content($content)
-    {
-        return $this->add_to_content( $content, 'before' );
-    }
-    function add_after_content($content)
-    {
-        return $this->add_to_content( $content, 'after' );
-    }
-    
-    function add_to_content( $content, $pos = 'after' ) 
-    {
-        if( is_single() ) 
-        {
-            ob_start();
 
-            $this->output_buttons();
-            
-            //Get output buffer and allow 3rd-party codes to filter HTML data
-            $template = apply_filters( 'wpssb_template_html', ob_get_clean(), $pos, $content );
-            
-            if( $pos === 'before' )
-            {   
-                //Prepend
-                $content = $template.$content;
-            }
-            else 
-            {   
-                //after (Append)
-                $content = $content.$template;
-            }
+    function add_to_content( $content )
+    {
+        $options = $this->get_options();
+        ob_start();
+
+        $this->output_buttons();
+
+        //Get output buffer and allow 3rd-party codes to filter HTML data
+        $template = apply_filters( 'wpssb_template_html', ob_get_clean(), $options['output_positions'], $content );
+
+        if( in_array('before', $options['output_positions']) )
+        {
+            //Prepend
+            $content = $template.$content;
+        }
+
+        if( in_array('after', $options['output_positions']) )
+        {
+            //after (Append)
+            $content = $content.$template;
         }
         
         return $content;
@@ -398,25 +447,20 @@ class WP_Simple_Share_Buttons
      */
     private function single_deactivate()
     {
-        
     }
 
     /**
      * action_links function.
      *
-     * @access public
-     * @param mixed $links
-     * @return void
+     * @param $links
+     * @return array
      */
     public function action_links($links)
     {
         $plugin_links = array(
-            '<a href="http://wordpress.org/plugins/wp-simple-share-buttons//">' . __('Info & Support', $this->plugin_slug) . '</a>',
+            '<a href="http://wordpress.org/plugins/wp-simple-share-buttons/">' . __('Info & Support', $this->plugin_slug) . '</a>',
         );
 
         return array_merge($plugin_links, $links);
     }
-
-
-    
 }

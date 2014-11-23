@@ -5,52 +5,94 @@ WP Simple Share Buttons
 
 The philosophy of this plugin is to be fast and slim. The first thing this means is that there is no admin interface, however it is very easy to customize the plugin using WordPress hooks.
 
+#### Services
+
+The plugin currently supports the following services:
+
+* Facebook
+* Twitter
+* LinkedIn
+* Google+
+
 ## Usage
 
-By default the plugin outputs all share buttons after the_content (priority 999).
+By default the plugin outputs all available buttons on single posts and pages with (priority 999).
 
-####Change output locations.
+You can customize which buttons are shown and where using filters.
+
+####Displayed buttons
+
+You can remove services using the following filter:
 
 ```php
-add_filter( 'wpssb_options', 'change_share_button_output');
-
-function change_share_button_output( $options )
+add_filter('wpssb_buttons', function($buttons)
 {
-	//Override output locations with the hook 'the_footer'
-	$options['output_locations'] = array(
-		'the_footer'
-	);
-
-	return $options;
-}
+	unset($buttons['linkedin']);
+	return $buttons;
+});
 ```
+
+*Default value: array('facebook', 'twitter', 'linkedin', 'googleplus')*
+
+####Button output locations
+
+The plugin can display share buttons before the post content/excerpt, after, or both.
+
+To display the buttons before and after the post content/excerpt, you can use this snippet:
+
+```php
+add_filter('wpssb_output_positions', function($positions)
+{
+	return array('before', 'after');
+});
+```
+
+*Default value: array('after')*
+
+####Output conditionals
+
+You can use [WordPress Conditional Tags](http://codex.wordpress.org/Conditional_Tags) to select where the output should be displayed. 
+Example:
+
+```php
+add_filter('wpssb_output_conditionals', function($conditionals)
+{
+	return array('is_single', 'is_page');
+});
+```
+
+*Default value: array('is_front_page', 'is_home', 'is_single', 'is_page', 'is_post_type_archive', 'is_singular')*
+
+####Output by post type
+
+If you have selected is_post, is_page or is_singular in the output conditionals, you can use a filter to specify which post types the buttons
+are displayed for:
+
+```php
+add_filter('wpssb_output_post_types', function($post_types)
+{
+	return array('post');
+});
+```
+
+*Default value: array('post', 'page')*
 
 #####Manual output in your theme
 
-First remove the standard output
+You can disable the output from the plugin altogether using:
+
 ```php
 add_filter( 'wpssb_default_output', '__return_false');
 ```
 
-And then add this code where ever you want in your template
+*Default value: true (bool)*
+
+Then, add this code wherever you want in your template:
 
 ```php
-WP_Simple_Share_Buttons()->output_buttons();
-```
-
-####Change what buttons we should show
-
-```php
-add_filter( 'wpssb_options', ‘change_share_button_output’);
-
-function change_share_button_output( $options )
+if(class_exists('WP_Simple_Share_Buttons')
 {
-	//Remove LinkedIn
-	unset($options['buttons']['linkedin']);
-	//Remove Google Plus
-	unset($options['buttons']['googleplus']);
-
-	return $options;
+	WP_Simple_Share_Buttons()->output_buttons();
 }
 ```
 
@@ -69,4 +111,3 @@ To get a started with your template, copy the template from ` /tempates/default.
 ####Change CSS output
 
 Coming soon
-

@@ -13,13 +13,12 @@ if( !function_exists('WP_Simple_Share_Buttons_Shortcode'))
             'enable' => array(),
             'disable' => array()
         ), $atts );
-        
-        
-	ob_start();
-        
+
+        ob_start();
+
         WP_Simple_Share_Buttons()->output_buttons('template');
-        
-	return ob_get_clean();
+
+        return ob_get_clean();
     }
     add_shortcode( 'wpssb', 'WP_Simple_Share_Buttons_Shortcode' );
 }
