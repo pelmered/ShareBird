@@ -32,7 +32,7 @@ $options = WP_Simple_Share_Buttons()->get_options();
             </a>
         </li>
         <li>
-            <a class="sharebutton googleplus" data-basecount="<?php echo $options['buttons']['facebook']['googleplus']; ?>" data-sharetype="googleplus" data-text="<?php echo get_the_title(); ?>" title="Share this on Google Plus" href="#">
+            <a class="sharebutton googleplus" data-basecount="<?php echo $options['buttons']['googleplus']['basecount']; ?>" data-sharetype="googleplus" data-text="<?php echo get_the_title(); ?>" title="Share this on Google Plus" href="#">
                 <i class="icon-googleplus">
                 </i> <span class="count"><?php //echo WP_Simple_Share_Buttons()->get_button_count('googleplus'); ?></span>
             </a>
