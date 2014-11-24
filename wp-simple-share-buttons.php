@@ -11,7 +11,7 @@
  * Plugin URI:  http://wordpress.org/plugins/wp-simple-share-buttons/
  * Description: SimpleShareButtons for WordPress.
  * Version:     0.1.1
- * Author:      Peter Elmered, khromov
+ * Author:      pekz0r, khromov
  * Author URI:  http://elmered.com
  * Text Domain: wp-simple-share-buttons
  * Domain Path: /languages
