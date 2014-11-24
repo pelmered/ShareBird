@@ -5,6 +5,10 @@ WP Simple Share Buttons
 
 The philosophy of this plugin is to be fast and slim. The first thing this means is that there is no admin interface, however it is very easy to customize the plugin using WordPress hooks.
 
+<div style="text-align:center">
+<img src="https://github.com/SubZane/SimpleShareButtons/raw/master/simplesharebuttons.png" alt="Simple Share Buttons"/>
+</div>
+
 #### Services
 
 The plugin currently supports the following services:
