@@ -7,6 +7,8 @@ The philosophy of this plugin is to be fast and slim. The first thing this means
 
 ![Demo](https://raw.githubusercontent.com/pelmered/WPSimpleShareButtons/master/simplesharebuttons.png "This is what the default output looks like")
 
+__Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
+
 #### Services
 
 The plugin currently supports the following services:
