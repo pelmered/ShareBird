@@ -10,7 +10,9 @@ The philosophy of this plugin is to be fast and slim. The first thing this means
 __Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
 
 ## Index
-* [Hooks - actions and filters](https://github.com/SubZane/SimpleShareButtons) 
+[Supported services](#supported-services) 
+[Usage](#usage) 
+* [Hooks - actions and filters]() 
   * [Displayed buttons](#displayed-buttons) 
   * [Button output locations](#button-output-locations) 
   * [Output conditionals](#output-conditionals) 
@@ -20,7 +22,7 @@ __Please note that this plugin is stil under early development and the API(hooks
 * [Change CSS output](#change-css-output) 
 
 
-## Services
+## Supported services
 
 The plugin currently supports the following services:
 
