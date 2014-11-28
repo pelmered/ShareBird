@@ -100,6 +100,60 @@ if(class_exists('WP_Simple_Share_Buttons')
 }
 ```
 
+####Customizing values / metadata
+
+To customize the metadata(title, author name etc.) that are passed to the share popup you can change this in the tamplate file, or by using filters like this.
+
+#####Customizing title
+Add tags at the end of the share text.
+
+```php
+add_filter('wpssb_get_post_title', function($post_title, $post_id)
+{
+	$tags = wp_get_post_tags($post_id);
+
+	foreach($tags AS $tag)
+	{
+		$post_title .= '#'.$tag->name;
+	}
+	
+	return $post_title;
+}, 10, 2);
+```
+The same code, but only for Facebook
+```php
+add_filter('wpssb_facebook_get_post_title', function($post_title, $post_id)
+{
+	$tags = wp_get_post_tags($post_id);
+
+	foreach($tags AS $tag)
+	{
+		$post_title .= '#'.$tag->name;
+	}
+	
+	return $post_title;
+}, 10, 2);
+```
+#####Customizing author
+
+```php
+add_filter('wpssb_get_author', function($post_author, $post_id)
+{
+	$post_author = 'myNickName'
+
+	return $post_author;
+}, 10, 2);
+```
+The same code but run only for Twitter
+```php
+add_filter('wpssb_twitter_get_author', function($post_author, $post_id)
+{
+	$post_author = 'myTwitterName';
+	
+	return $post_author;
+}, 10, 2);
+```
+
 ####Change HTML output (Templating)
 
 Add the templates to the folder ` /wpssb/ ` in your themes root folder. Use the name of the files when you output the buttons like this:
@@ -114,4 +168,16 @@ To get a started with your template, copy the template from ` /tempates/default.
 
 ####Change CSS output
 
-Coming soon
+It is off course very simple to just extend the default styles to make them look the way you want. But if you want to include your own styles that can be made like this:
+
+```php
+add_action( 'wp_enqueue_scripts', function() 
+{
+	//derigster default script
+	wp_dequeue_style('wp-simple-share-buttons-public-styles');
+
+	//Add your own custom script from theme folder
+	wp_enqueue_style( 'my-wp-simple-share-buttons-styles', get_template_directory_uri() . '/css/my-styles.css' );
+});
+```
+

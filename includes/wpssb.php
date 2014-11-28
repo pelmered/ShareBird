@@ -87,13 +87,15 @@ class WP_Simple_Share_Buttons
      * @param int $id
      * @return mixed|void
      */
-    function get_post_title($service, $id = 0)
+    function get_post_title($service, $post_id = 0)
     {
+		$id = $this->valid_id($post_id);
+
         //General filter
-        $title_value = apply_filters("wpssb_post_title", get_the_title($id));
+        $title_value = apply_filters("wpssb_get_post_title", get_the_title($id), $id);
 
         //Service-specific filter
-        return apply_filters("wpssb_{$service}_post_title", $title_value);
+        return apply_filters("wpssb_{$service}_get_post_title", $title_value);
     }
 
     /**
@@ -103,14 +105,42 @@ class WP_Simple_Share_Buttons
      * @param $service
      * @return mixed|void
      */
-    function get_author($service)
+    function get_author($service, $post_id = 0)
     {
+		$id = $this->valid_id($post_id);
+
+		if($id)
+		{
+			$post = get_post( $id );
+     		$author = $post->post_author;
+		}
+		else
+		{
+			$author = get_the_author();
+		}
+
         //General filter
-        $author_value = apply_filters("wpssb_author", get_the_author());
+        $author_value = apply_filters("wpssb_get_author", $author, $id);
 
         //Service-specific filter
-        return apply_filters("wpssb_{$service}_author", $author_value);
+        return apply_filters("wpssb_{$service}_get_author", $author_value);
     }
+
+    function valid_id($id)
+    {
+		$id = intval($id);
+
+		if( $id > 0 )
+		{
+			return $id;
+		}
+		else
+		{
+			return null;
+		}
+    }
+	
+
     
     function plugin_init()
     {
