@@ -11,6 +11,7 @@ __Please note that this plugin is stil under early development and the API(hooks
 
 ## Index
 [Supported services](#supported-services) 
+
 [Usage](#usage) 
 * [Hooks - actions and filters]() 
   * [Displayed buttons](#displayed-buttons) 
