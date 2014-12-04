@@ -87,15 +87,13 @@ class WP_Simple_Share_Buttons
      * @param int $id
      * @return mixed|void
      */
-    function get_post_title($service, $post_id = 0)
+    function get_post_title($service, $id = 0)
     {
-		$id = $this->valid_id($post_id);
-
         //General filter
-        $title_value = apply_filters("wpssb_get_post_title", get_the_title($id), $id);
+        $title_value = apply_filters("wpssb_post_title", get_the_title($id));
 
         //Service-specific filter
-        return apply_filters("wpssb_{$service}_get_post_title", $title_value);
+        return apply_filters("wpssb_{$service}_post_title", $title_value);
     }
 
     /**
@@ -105,42 +103,14 @@ class WP_Simple_Share_Buttons
      * @param $service
      * @return mixed|void
      */
-    function get_author($service, $post_id = 0)
+    function get_author($service)
     {
-		$id = $this->valid_id($post_id);
-
-		if($id)
-		{
-			$post = get_post( $id );
-     		$author = $post->post_author;
-		}
-		else
-		{
-			$author = get_the_author();
-		}
-
         //General filter
-        $author_value = apply_filters("wpssb_get_author", $author, $id);
+        $author_value = apply_filters("wpssb_author", get_the_author());
 
         //Service-specific filter
-        return apply_filters("wpssb_{$service}_get_author", $author_value);
+        return apply_filters("wpssb_{$service}_author", $author_value);
     }
-
-    function valid_id($id)
-    {
-		$id = intval($id);
-
-		if( $id > 0 )
-		{
-			return $id;
-		}
-		else
-		{
-			return null;
-		}
-    }
-	
-
     
     function plugin_init()
     {
@@ -195,9 +165,9 @@ class WP_Simple_Share_Buttons
         }
     }
     
-    function output_buttons( $template_name = 'default' )
+    function output_buttons( $template_name = 'default', $args = array() )
     {
-        include( $this->get_template( $template_name, $args = array() ) );
+        include( $this->get_template( $template_name, $args ) );
     }
 
     /**
@@ -237,6 +207,10 @@ class WP_Simple_Share_Buttons
      */
     function get_template( $template_name = 'default', $args = array() )
     {
+        global $wpssb_post, $post;
+        
+        $wpssb_post = $post;
+        
         $template_name = $template_name.'.php';
         $template_path = 'wpssb/';
         $default_path = WP_SSB_PLUGIN_PATH . 'templates/';
@@ -253,9 +227,24 @@ class WP_Simple_Share_Buttons
         if ( ! $template ) {
                 $template = $default_path . $template_name;
         }
+        
+        
+        //print_r($args);
+        
+        if( !empty($args['post_id']) && $args['post_id'] > 0 )
+        {
+            $post = get_post($args['post_id']);
+            
+            if($post)
+            {
+                $wpssb_post = $post;
+            }
+        }
 
         // Allow 3rd party plugin filter template file from their plugin
         $template = apply_filters( 'wpssb_get_template', $template, $template_name, $args, $template_path, $default_path );
+        
+        wp_reset_postdata();
         
         return $template;
     }
