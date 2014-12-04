@@ -2,9 +2,9 @@ ShareBird social buttons
 ====================
 ###Share the Word, with ShareBird!
 
-Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by [Andreas Norman (SubZane)](https://github.com/SubZane). 
-
 The philosophy of this plugin is to be fast, slim and developer friendly. The most prominent thing you will notice is that there is no settings and admin interface, however it is very easy to customize the plugin using WordPress hooks. It's very easy and straight forward. Read the documentation below to get started.
+
+Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by [Andreas Norman (SubZane)](https://github.com/SubZane). 
 
 ####Default styling
 ![Demo](https://raw.githubusercontent.com/pelmered/ShareBird/master/simplesharebuttons.png "This is what the default output looks like")
