@@ -6,8 +6,7 @@ Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by 
 
 The philosophy of this plugin is to be fast, slim and developer friendly. The most prominent thing you will notice is that there is no settings and admin interface, however it is very easy to customize the plugin using WordPress hooks. It's very easy and straight forward. Read the documentation below to get started.
 
-Default styling:
-
+####Default styling
 ![Demo](https://raw.githubusercontent.com/pelmered/ShareBird/master/simplesharebuttons.png "This is what the default output looks like")
 
 [Screenshot1 - TwentyThriteen, default styling](https://raw.githubusercontent.com/pelmered/ShareBird/master/assets/screenshot-1.png "Screenshot1 - TwentyThriteen, default styling]")
