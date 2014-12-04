@@ -9,7 +9,20 @@ The philosophy of this plugin is to be fast and slim. The first thing this means
 
 __Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
 
-#### Services
+## Index
+* [Supported services](#supported-services) 
+* [Usage](#usage) 
+  * [Hooks - actions and filters]() 
+    * [Displayed buttons](#displayed-buttons) 
+    * [Button output locations](#button-output-locations) 
+    * [Output conditionals](#output-conditionals) 
+    * [Output by post type](#output-by-post-type) 
+    * [Customizing values / metadata](#customizing-values--metadata) 
+  * [Change HTML output (Templating)](#change-html-output-templating) 
+  * [Change CSS output](#change-css-output) 
+
+
+## Supported services
 
 The plugin currently supports the following services:
 
@@ -23,6 +36,8 @@ The plugin currently supports the following services:
 By default the plugin outputs all available buttons on single posts and pages with (priority 999).
 
 You can customize which buttons are shown and where using filters.
+
+### Hooks - actions and filters
 
 ####Displayed buttons
 
@@ -154,7 +169,7 @@ add_filter('wpssb_twitter_get_author', function($post_author, $post_id)
 }, 10, 2);
 ```
 
-####Change HTML output (Templating)
+###Change HTML output (Templating)
 
 Add the templates to the folder ` /wpssb/ ` in your themes root folder. Use the name of the files when you output the buttons like this:
 
@@ -166,7 +181,7 @@ This will use the template located in ` /wpssb/my_button_template.php `
 
 To get a started with your template, copy the template from ` /tempates/default.php ` in the plugin folder, usually ` /wp-content/plugins/wp-simple-share-buttons `.
 
-####Change CSS output
+###Change CSS output
 
 It is off course very simple to just extend the default styles to make them look the way you want. But if you want to include your own styles that can be made like this:
 
