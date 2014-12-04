@@ -1,17 +1,23 @@
-WP Simple Share Buttons
+ShareBird social buttons
 ====================
+###Share the Word, with ShareBird!
 
-[SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) for WordPress. 
+Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by [Andreas Norman (SubZane)](https://github.com/SubZane). 
 
-The philosophy of this plugin is to be fast and slim. The first thing this means is that there is no admin interface, however it is very easy to customize the plugin using WordPress hooks.
+The philosophy of this plugin is to be fast, slim and developer friendly. The most prominent thing you will notice is that there is no settings and admin interface, however it is very easy to customize the plugin using WordPress hooks. It's very easy and straight forward. Read the documentation below to get started.
+
+Default styling:
 
 ![Demo](https://raw.githubusercontent.com/pelmered/WPSimpleShareButtons/master/simplesharebuttons.png "This is what the default output looks like")
+
+[Screenshot1 - TwentyThriteen, default styling](https://raw.githubusercontent.com/pelmered/ShareBird/master/assets/screenshot-1.png "Screenshot1 - TwentyThriteen, default styling]")
+
 
 __Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
 
 ## Index
 * [Supported services](#supported-services) 
-* [Usage](#usage) 
+* [Usage / Documentation](#usage--documentation) 
   * [Hooks - actions and filters]() 
     * [Displayed buttons](#displayed-buttons) 
     * [Button output locations](#button-output-locations) 
@@ -31,7 +37,7 @@ The plugin currently supports the following services:
 * LinkedIn
 * Google+
 
-## Usage
+## Usage / Documentation
 
 By default the plugin outputs all available buttons on single posts and pages with (priority 999).
 
