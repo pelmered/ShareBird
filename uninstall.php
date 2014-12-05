@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
-* @package    wp-simple-share-buttons
+* @package    sharebird
  * @author    Peter Elmered <peter@elmered.com>
  * @link      http://extendwp.com
  * @copyright 2013 Peter Elmered
@@ -14,6 +14,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 //Cleanup all registerd options
-require_once 'wp-simple-share-buttons.php';
+require_once 'sharebird.php';
 
-delete_option(WP_SSB_PLUGIN_SLUG.'_options');
+delete_option(SHAREBIRD_PLUGIN_SLUG.'_options');

@@ -4,8 +4,9 @@
 	"use strict";
 	$(function () {
             
-            $('.wpsimplesharebuttons').simplesharebuttons({
-                GooglePlusAPIProvider: wpssb_options.GooglePlusAPIProviderURI
+            $('.sharebird').simplesharebuttons({
+                fetchCounts: sharebird_options.fetchCounts,
+                GooglePlusAPIProvider: sharebird_options.GooglePlusAPIProviderURI
             });
     
 	});

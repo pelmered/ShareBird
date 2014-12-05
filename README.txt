@@ -1,4 +1,4 @@
-=== WP Simple Share Buttons ===
+=== ShareBird ===
 Contributors: pekz0r, khromov
 Tags: Social share, share buttons, facebook, twitter, linkedin, googleplus
 Requires at least: 3.5.1
@@ -15,7 +15,7 @@ Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons "Sim
 
 = Development =
 
-All development of this plugin occurs on [GitHub](https://github.com/pelmered/WPSimpleShareButtons "WP Simple Share Buttons on GitHub"). Please help me develop this by forking and sending pull requests.
+All development of this plugin occurs on [GitHub](https://github.com/pelmered/WPSimpleShareButtons "ShareBird on GitHub"). Please help me develop this by forking and sending pull requests.
 
 == Installation ==
 

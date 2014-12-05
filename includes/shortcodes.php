@@ -5,9 +5,9 @@
  * and open the template in the editor.
  */
 
-if( !function_exists('WP_Simple_Share_Buttons_Shortcode'))
+if( !function_exists('ShareBird_Shortcode'))
 {
-    function WP_Simple_Share_Buttons_Shortcode( $atts )
+    function ShareBird_Shortcode( $atts )
     {
         $a = shortcode_atts( array(
             'enable' => array(),
@@ -16,9 +16,9 @@ if( !function_exists('WP_Simple_Share_Buttons_Shortcode'))
 
         ob_start();
 
-        WP_Simple_Share_Buttons()->output_buttons('template', array('post_id' => 2));
+        ShareBird()->output_buttons('template', array('post_id' => 2));
 
         return ob_get_clean();
     }
-    add_shortcode( 'wpssb', 'WP_Simple_Share_Buttons_Shortcode' );
+    add_shortcode( 'sharebird', 'ShareBird_Shortcode' );
 }
