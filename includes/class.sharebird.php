@@ -7,7 +7,6 @@
 
 if(!class_exists('ShareBird')) 
 {
-}
 
 class ShareBird
 {
@@ -64,6 +63,9 @@ class ShareBird
         add_action('init', array($this, 'load_plugin_textdomain'));
 
         add_filter( 'plugin_action_links_' . SHAREBIRD_PLUGIN_BASENAME, array( $this, 'action_links' ) );
+        
+        add_action( 'wp_ajax_sharebird_set_count', array( $this, 'ajax_set_count') );
+
     }
     
     /**
@@ -282,22 +284,39 @@ class ShareBird
     
     function get_counts()
     {
+	$post = get_post( $post );
+        
+        $counts = get_post_meta($post->ID, 'sharebird_counts', true);
+        
         
         return array(
             'facebook' => 5,
-            'facebook' => 5,
-            'facebook' => 5,
-            'facebook' => 5,
+            'twitter' => 5,
+            'linkedin' => 5,
+            'googleplus' => 5,
         );
         
         
         
     }
     
-    function set_count($counts)
+    
+    function ajax_set_count() {
+        check_ajax_referer( 'sharebird-set-post-count', 'nonce' );
+        
+        echo 'test';
+        
+        
+        die;
+    }
+    function set_count($post_id, $counts)
     {
-        if ( ! update_post_meta (7, 'fruit', 'banana') ) { 
-            add_post_meta(7, 'fruit', 'banana', true );	
+        //TODO: Add validation/sanitation
+        
+        
+        
+        if ( ! update_post_meta ($post_id, 'sharebird_counts', $counts) ) { 
+            add_post_meta($post_id, 'sharebird_counts', $counts, true );	
         };
     }
 
@@ -328,14 +347,14 @@ class ShareBird
         wp_localize_script($this->plugin_slug . '-public-sctipts', 'sharebird_options', array(
             'fetchCounts'               => $this->get_fetch_count(),
             'GooglePlusAPIProviderURI'  => SHAREBIRD_PLUGIN_URL.'includes/APIProviders/GooglePlus.php',
-            'ajax_url'                  => admin_url('/admin-ajax.php'), //Not used
-            'get_count_nonce'           => wp_create_nonce("sharebird-get-count"), //Not used
+            'ajaxURL'                  => admin_url('/admin-ajax.php'), //Not used
+            'setCountNonce'           => wp_create_nonce("sharebird-set-post-count"), //Not used
         ));
     }
     
     function get_fetch_count()
     {
-        return false;
+        //return false;
     
         return true;
     }
@@ -519,4 +538,5 @@ class ShareBird
 
         return array_merge($plugin_links, $links);
     }
+}
 }

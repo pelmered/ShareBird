@@ -1,6 +1,3 @@
-/*! Simple Share Buttons - v0.5.0 - 2014-11-18
-* https://github.com/SubZane/simplesharebuttons
-* Copyright (c) 2014 Andreas Norman; Licensed MIT */
 (function ($) {
 	// Change this to your plugin name.
 	var pluginName = 'simplesharebuttons';
@@ -14,6 +11,10 @@
 		var el = element;
 		var $el = $(element);
 		var totalCount = 0;
+		var twitterCount = 0;
+		var facebookCount = 0;
+		var linkedinCount = 0;
+		var googleplusCount = 0;
 
 		// Extend default options with those supplied by user.
 		options = $.extend({}, $.fn[pluginName].defaults, options);
@@ -77,10 +78,12 @@
 					count = getBaseCount(element) + parseInt(response.shares, 10);
 					$(element).find('.count').html(count);
 					totalCount = totalCount + count;
+					facebookCount = count;
 				} else {
 					count = getBaseCount(element);
 					$(element).find('.count').html(count);
 					totalCount = totalCount + count;
+					facebookCount = count;
 				}
 
 			});
@@ -102,6 +105,7 @@
 				var count = getBaseCount(element) + parseInt(response.count, 10);
 				$(element).find('.count').html(count);
 				totalCount = totalCount + count;
+				twitterCount = count;
 			});
 		}
 
@@ -123,6 +127,7 @@
 				var count = getBaseCount(element) + parseInt(response.count, 10);
 				$(element).find('.count').html(count);
 				totalCount = totalCount + count;
+				linkedinCount = count;
 			});
 		}
 
@@ -135,6 +140,7 @@
 				var count = getBaseCount(element) + parseInt(response, 10);
 				$(element).find('.count').html(count);
 				totalCount = totalCount + count;
+				googleplusCount = count;
 			});
 		}
 
@@ -269,6 +275,22 @@
 			return totalCount;
 		}
 
+		function getFacebookCount() {
+			return facebookCount;
+		}
+
+		function getTwitterCount() {
+			return twitterCount;
+		}
+
+		function getLinkedinCount() {
+			return linkedinCount;
+		}
+
+		function getGooglePlusCount() {
+			return googleplusCount;
+		}
+
 		/**
 		 * Get/set a plugin option.
 		 * Get usage: $('#el').simplesharebuttons('option', 'key');
@@ -311,7 +333,8 @@
 			if (options[hookName] !== undefined) {
 				// Call the user defined function.
 				// Scope is set to the jQuery element we are operating on.
-				options[hookName].call(el);
+                                options[hookName](el)
+				//options[hookName].call(el);
 			}
 		}
 
@@ -322,7 +345,11 @@
 		return {
 			option: option,
 			destroy: destroy,
-			getTotalCount: getTotalCount
+			getTotalCount: getTotalCount,
+			getFacebookCount: getFacebookCount,
+			getGooglePlusCount: getGooglePlusCount,
+			getLinkedinCount: getLinkedinCount,
+			getTwitterCount: getTwitterCount
 		};
 	}
 
