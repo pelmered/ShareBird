@@ -6,13 +6,15 @@ The philosophy of this plugin is to be fast, slim and developer friendly. The mo
 
 Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by [Andreas Norman (SubZane)](https://github.com/SubZane). 
 
+
+__Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
+
+
 ####Default styling
 ![Demo](https://raw.githubusercontent.com/pelmered/ShareBird/master/simplesharebuttons.png "This is what the default output looks like")
 
 [Screenshot1 - TwentyThriteen, default styling](https://raw.githubusercontent.com/pelmered/ShareBird/master/assets/screenshot-1.png "Screenshot1 - TwentyThriteen, default styling]")
 
-
-__Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
 
 ## Index
 * [Supported services](#supported-services) 
