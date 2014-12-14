@@ -2,11 +2,11 @@
 /**
  * Fired when the plugin is uninstalled.
  *
-* @package    sharebird
+ * @package    sharebird
  * @author    Peter Elmered <peter@elmered.com>
  * @link      http://extendwp.com
  * @copyright 2013 Peter Elmered
-  */
+ */
 
 // If uninstall, not called from WordPress, then exit
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
