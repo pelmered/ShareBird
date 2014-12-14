@@ -1,10 +1,4 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 if(!class_exists('ShareBird')) 
 {
 
@@ -284,20 +278,17 @@ class ShareBird
     
     function get_counts()
     {
-	$post = get_post( $post );
+        global $post;
+	    $post = get_post( $post );
         
         $counts = get_post_meta($post->ID, 'sharebird_counts', true);
         
-        
         return array(
-            'facebook' => 5,
-            'twitter' => 5,
-            'linkedin' => 5,
-            'googleplus' => 5,
+            'facebook' => 0,
+            'twitter' => 0,
+            'linkedin' => 0,
+            'googleplus' => 0,
         );
-        
-        
-        
     }
     
     
@@ -394,7 +385,9 @@ class ShareBird
         $domain = $this->plugin_slug;
         $locale = apply_filters('plugin_locale', get_locale(), $domain);
 
-        load_textdomain($domain, trailingslashit(WP_LANG_DIR) . $domain . '/' . $domain . '-' . $locale . '.mo');
+        // Load from /wp-content/plugins/sharebird-xx_XX.mo
+        load_textdomain($domain, trailingslashit(WP_LANG_DIR) .'plugins/' . $domain . '-' . $locale . '.mo');
+
         load_plugin_textdomain($domain, FALSE, basename(dirname(__FILE__)) . '/languages');
     }
     
@@ -533,7 +526,7 @@ class ShareBird
     public function action_links($links)
     {
         $plugin_links = array(
-            '<a href="http://wordpress.org/plugins/sharebird/">' . __('Info & Support', $this->plugin_slug) . '</a>',
+            '<a href="http://wordpress.org/plugins/sharebird/" target="_blank">' . __('Info & Support', $this->plugin_slug) . '</a>',
         );
 
         return array_merge($plugin_links, $links);

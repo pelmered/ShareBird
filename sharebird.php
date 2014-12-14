@@ -9,8 +9,8 @@
  * @wordpress-plugin
  * Plugin Name: ShareBird Social Buttons
  * Plugin URI:  http://wordpress.org/plugins/sharebird/
- * Description: 
- * Version:     0.1.1
+ * Description: Sharing buttons for developers
+ * Version:     0.1.2
  * Author:      pekz0r, khromov
  * Author URI:  http://elmered.com
  * Text Domain: sharebird
@@ -54,7 +54,7 @@ if( !defined('SHAREBIRD_PLUGIN_URL'))
     define('SHAREBIRD_PLUGIN_URL', plugins_url('', __FILE__).'/');
 }
 
-add_action( 'plugins_loaded', 'ShareBird' );    
+add_action( 'plugins_loaded', 'ShareBird' );
 
 if( !class_exists( $class_name ) && !function_exists( $class_name ))
 {
@@ -63,9 +63,8 @@ if( !class_exists( $class_name ) && !function_exists( $class_name ))
         require_once( SHAREBIRD_PLUGIN_PATH .'includes/class.sharebird.php' );
 
         return ShareBird::get_instance();
-    }
+    };
 }
-
 
 // Register hooks that are fired when the plugin is activated, deactivated, and uninstalled, respectively.
 register_activation_hook(__FILE__, array($class_name(), 'activate'));
