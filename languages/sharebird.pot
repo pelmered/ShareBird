@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ShareBird Social Buttons\n"
-"POT-Creation-Date: 2014-12-14 23:52+0100\n"
-"PO-Revision-Date: 2014-12-14 23:53+0100\n"
+"POT-Creation-Date: 2014-12-15 00:27+0100\n"
+"PO-Revision-Date: 2014-12-15 00:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -18,6 +18,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class.sharebird.php:529 includes/wpssb.php:474
+#: includes/class.sharebird.php:531
 msgid "Info & Support"
+msgstr ""
+
+#: templates/default.php:10
+msgid "Share this on Facebook"
+msgstr ""
+
+#: templates/default.php:19
+msgid "Share this on Twitter"
+msgstr ""
+
+#: templates/default.php:28
+msgid "Share this on LinkedIn"
+msgstr ""
+
+#: templates/default.php:37
+msgid "Share this on Google Plus"
 msgstr ""

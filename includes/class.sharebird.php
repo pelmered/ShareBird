@@ -167,6 +167,8 @@ class ShareBird
     
     function output_buttons( $template_name = 'default', $args = array() )
     {
+        $args['plugin_slug'] = $this->plugin_slug;
+        extract($args);
         include( $this->get_template( $template_name, $args ) );
     }
 
