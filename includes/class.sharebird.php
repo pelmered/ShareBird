@@ -165,11 +165,9 @@ class ShareBird
         }
     }
     
-    function output_buttons( $template_name = 'default', $args = array() )
+    function output_buttons( $template_name = 'sharebird-buttons.php', $args = array() )
     {
-        $args['plugin_slug'] = $this->plugin_slug;
-        extract($args);
-        include( $this->get_template( $template_name, $args ) );
+        $this->include_template( $template_name, $args );
     }
 
     /**
@@ -200,55 +198,27 @@ class ShareBird
 
         return $this->options;
     }
-    
+
 
     /**
-     * @param string $template_name
+     * @param $template
      * @param array $args
-     * @return mixed|string|void
      */
-    function get_template( $template_name = 'default', $args = array() )
+    function include_template( $template, $args = array() )
     {
-        global $sharebird_post, $post;
-        
-        $sharebird_post = $post;
-        
-        $template_name = $template_name.'.php';
-        $template_path = 'sharebird/';
-        $default_path = SHAREBIRD_PLUGIN_PATH . 'templates/';
+        //TODO: No global loop dependency please!
+        global $post;
 
-        // Look within passed path within the theme - this is priority
-        $template = locate_template(
-                array(
-                    trailingslashit( $template_path ) . $template_name,
-                    //$template_name
-                )
-        );
+        $args['plugin_slug'] = $this->plugin_slug;
+        $args['post'] = $post;
 
-        // Get default template
-        if ( ! $template ) {
-                $template = $default_path . $template_name;
-        }
-        
-        
-        //print_r($args);
-        
-        if( !empty($args['post_id']) && $args['post_id'] > 0 )
-        {
-            $post = get_post($args['post_id']);
-            
-            if($post)
-            {
-                $sharebird_post = $post;
-            }
-        }
+        extract(apply_filters('sharebird_post_data', $args, $template));
 
-        // Allow 3rd party plugin filter template file from their plugin
-        $template = apply_filters( 'sharebird_get_template', $template, $template_name, $args, $template_path, $default_path );
-        
-        wp_reset_postdata();
-        
-        return $template;
+        //Look in theme folder first, then plugin folder
+        if(locate_template($template) === '')
+            include SHAREBIRD_PLUGIN_PATH . 'templates/' . $template;
+        else
+            include locate_template($template);
     }
 
     function add_to_content( $content )
