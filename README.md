@@ -178,15 +178,13 @@ add_filter('sharebird_twitter_get_author', function($post_author, $post_id)
 
 ###Change HTML output (Templating)
 
-Add the templates to the folder ` /sharebird/ ` in your themes root folder. Use the name of the files when you output the buttons like this:
+Copy the default template, sharebird-buttons.php from the plugins templates/ folder to your themes root folder.
 
-```php
-ShareBird()->output_buttons('my_button_template');
+Example:
+
 ```
-
-This will use the template located in ` /sharebird/my_button_template.php `
-
-To get a started with your template, copy the template from ` /tempates/default.php ` in the plugin folder, usually ` /wp-content/plugins/sharebird `.
+/wp-content/themes/your-theme/sharebird-buttons.php
+```
 
 ###Change CSS output
 
