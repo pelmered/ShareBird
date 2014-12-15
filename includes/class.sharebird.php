@@ -117,37 +117,6 @@ class ShareBird
         return self::$instance;         
     }
 
-    /**
-     * Wrapper for getting post title. Adds filters.
-     *
-     * @param $service
-     * @param int $id
-     * @return mixed|void
-     */
-    function get_post_title($service, $id = 0)
-    {
-        //General filter
-        $title_value = apply_filters("sharebird_post_title", get_the_title($id));
-
-        //Service-specific filter
-        return apply_filters("sharebird_{$service}_post_title", $title_value);
-    }
-
-    /**
-     * Wrapper for getting post author. Adds filters.
-     * TODO: get_the_author() works only in the loop. This is not great as share buttons may be used outside the main loop.
-     *
-     * @param $service
-     * @return mixed|void
-     */
-    function get_author($service)
-    {
-        //General filter
-        $author_value = apply_filters("sharebird_author", get_the_author());
-
-        //Service-specific filter
-        return apply_filters("sharebird_{$service}_author", $author_value);
-    }
     
     function plugin_init()
     {
@@ -202,8 +171,13 @@ class ShareBird
         }
     }
     
-    function output_buttons( $template_name = 'sharebird-buttons.php', $args = array() )
+    function output_buttons( $template_name = '', $args = array() )
     {
+        if( empty($template_name) )
+        {
+            $template_name = 'sharebird-buttons.php';
+        }
+        
         $this->include_template( $template_name, $args );
     }
 
@@ -244,8 +218,18 @@ class ShareBird
     function include_template( $template, $args = array() )
     {
         //TODO: No global loop dependency please!
-        global $post;
-
+        //global $post;
+        
+        if( !empty($args['post_id']))
+        {
+            $post = get_post($args['post_id']);
+        }
+        else
+        {
+            //Get current post (the_loop)
+            $post = get_post();
+        }
+        
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
 
@@ -283,7 +267,37 @@ class ShareBird
         return $content;
     }
     
-    
+    /**
+     * Wrapper for getting post title. Adds filters.
+     *
+     * @param $service
+     * @param int $id
+     * @return mixed|void
+     */
+    function get_post_title($service, $id = 0)
+    {
+        //General filter
+        $title_value = apply_filters("sharebird_post_title", get_the_title($id));
+
+        //Service-specific filter
+        return apply_filters("sharebird_{$service}_post_title", $title_value);
+    }
+
+    /**
+     * Wrapper for getting post author. Adds filters.
+     * TODO: get_the_author() works only in the loop. This is not great as share buttons may be used outside the main loop.
+     *
+     * @param $service
+     * @return mixed|void
+     */
+    function get_author($service)
+    {
+        //General filter
+        $author_value = apply_filters("sharebird_author", get_the_author());
+
+        //Service-specific filter
+        return apply_filters("sharebird_{$service}_author", $author_value);
+    }
     
     function get_counts()
     {
