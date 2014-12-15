@@ -133,7 +133,7 @@
 
 		function fetchGooglePlusCount(element) {
 			$.ajax({
-				url: options.GooglePlusAPIProvider + '?url=' + getButtonURL(element),
+				url: options.GooglePlusAPIProvider + '&url=' + getButtonURL(element),
 				async: true,
 				dataType: 'text',
 			}).done(function (response) {
@@ -333,8 +333,7 @@
 			if (options[hookName] !== undefined) {
 				// Call the user defined function.
 				// Scope is set to the jQuery element we are operating on.
-                                options[hookName](el)
-				//options[hookName].call(el);
+				options[hookName].call(el);
 			}
 		}
 

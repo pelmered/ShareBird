@@ -1,14 +1,13 @@
 //JavaScripts for the front end of the plugin
-
 (function ($) {
 	"use strict";
 	$(function () {
-            
             $('.sharebird').simplesharebuttons({
                 fetchCounts: sharebird_options.fetchCounts,
-                GooglePlusAPIProvider: sharebird_options.GooglePlusAPIProviderURI,
+                GooglePlusAPIProvider: sharebird_options.GooglePlusAPIProviderURI
                 
                 //Send AJAX call back to WordPress to store the counts
+                /*
                 onLoad : function( el ) {
                     
                     var $el = $(el);
@@ -33,6 +32,7 @@
                     }); 
                     
                 }
+                */
             });
     
 	});

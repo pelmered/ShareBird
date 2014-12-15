@@ -60,6 +60,43 @@ class ShareBird
         
         add_action( 'wp_ajax_sharebird_set_count', array( $this, 'ajax_set_count') );
 
+        //Both logged in and unprivileged users
+        add_action('wp_ajax_get_googleplus', array($this, 'ajax_get_googleplus'));
+        add_action('wp_ajax_nopriv_get_googleplus', array($this, 'ajax_get_googleplus'));
+    }
+
+    function ajax_get_googleplus()
+    {
+        $url = isset($_GET['url']) ?  $_GET['url'] : null;
+        //check_ajax_referer( 'sharebird-set-post-count', 'nonce' );
+        //TODO: Cache + secure?
+        //TODO: Limit to current domain?
+
+        if($url !== null)
+        {
+            $raw_share_button = wp_remote_get('https://plusone.google.com/_/+1/fastbutton?url=' . urlencode($url));
+
+            if(!is_wp_error($raw_share_button))
+            {
+                $share_count = array();
+                /**
+                 * http://stackoverflow.com/questions/15367687/how-to-get-the-1-count-in-google-plus-using-any-api
+                 * http://stackoverflow.com/questions/21524077/getting-google-1-page-shares-via-ajax-hidden-api
+                 */
+                preg_match('/.*\.__SSR.*{c:\s*([0-9]*)\..*/', $raw_share_button['body'], $share_count);
+
+                if(sizeof($share_count) === 2)
+                    echo $share_count[1];
+                else
+                    echo 0;
+            }
+            else
+                echo 0;
+        }
+        else
+            echo 0;
+
+        die;
     }
     
     /**
@@ -297,9 +334,8 @@ class ShareBird
     function ajax_set_count() {
         check_ajax_referer( 'sharebird-set-post-count', 'nonce' );
         
-        echo 'test';
-        
-        
+        echo '0';
+
         die;
     }
     function set_count($post_id, $counts)
@@ -339,7 +375,7 @@ class ShareBird
         
         wp_localize_script($this->plugin_slug . '-public-sctipts', 'sharebird_options', array(
             'fetchCounts'               => $this->get_fetch_count(),
-            'GooglePlusAPIProviderURI'  => SHAREBIRD_PLUGIN_URL.'includes/APIProviders/GooglePlus.php',
+            'GooglePlusAPIProviderURI'  => admin_url('/admin-ajax.php') . '?action=get_googleplus', //TODO: Implement check for check_ajax_referer();
             'ajaxURL'                  => admin_url('/admin-ajax.php'), //Not used
             'setCountNonce'           => wp_create_nonce("sharebird-set-post-count"), //Not used
         ));
