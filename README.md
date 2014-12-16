@@ -186,6 +186,14 @@ Example:
 /wp-content/themes/your-theme/sharebird-buttons.php
 ```
 
+You can define as many templates as you want. Just put the template files in you theme and use them like this:
+
+```php
+ShareBird()->output_buttons('folder/my_button_template.php');
+```
+
+This will use the template located in ` /folder/my_button_template.php `
+
 ###Change CSS output
 
 It is off course very simple to just extend the default styles to make them look the way you want. But if you want to include your own styles that can be made like this:
