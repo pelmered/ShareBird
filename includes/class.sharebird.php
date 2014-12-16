@@ -43,7 +43,9 @@ class ShareBird
      * @since    0.1.0
      * @var      array
      */
-    public $options = array();
+    public $output_options = array();
+    
+    
     
     function __construct()
     {
@@ -120,7 +122,7 @@ class ShareBird
     
     function plugin_init()
     {
-        $options = $this->get_options();
+        $options = $this->get_output_options();
         
         // Load public-facing style sheet and JavaScript.
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
@@ -131,7 +133,7 @@ class ShareBird
         // Don't perform any output on admin side
         if(!is_admin())
         {
-            //Should we display output?
+            //Should we display default output(output after or before the_content)?
             if($options['default_output'] === true)
             {
                 //Which conditionals should we display the post for?
@@ -186,28 +188,57 @@ class ShareBird
      *
      * @return array|mixed|void
      */
-    function get_options()
+    function get_output_options()
     {
-        if( empty( $this->options ) )
+        if( empty( $this->output_options ) )
         {
-            $this->options = apply_filters( 'sharebird_options',
+            $this->output_options = apply_filters( 'sharebird_output_options',
                 array(
-                    'default_output' => apply_filters( 'sharebird_default_output', true ),
-                    'output_conditionals' => apply_filters( 'sharebird_output_conditionals', array('is_front_page', 'is_home', 'is_single', 'is_page', 'is_post_type_archive', 'is_singular')),
-                    'output_post_types' => apply_filters( 'sharebird_output_post_types', array('post', 'page')),
-                    'output_positions' => apply_filters( 'sharebird_output_positions', array('after')), //before, after or both
-                    //TODO: This is ugly, can we fix it without making the hook more difficult to use?
-                    'buttons' =>  apply_filters( 'sharebird_buttons', array(
-                        'facebook' => true,
-                        'twitter' => true,
-                        'linkedin' => true,
-                        'googleplus' => true
-                    )),
+                    'default_output' => apply_filters( 'sharebird_default_output', true ), //Output after or before the_content
+                    'output_conditionals' => apply_filters( 'sharebird_output_conditionals', array('is_front_page', 'is_home', 'is_single', 'is_page', 'is_post_type_archive', 'is_singular') ),
+                    'output_post_types' => apply_filters( 'sharebird_output_post_types', array('post', 'page') ),
+                    'output_positions' => apply_filters( 'sharebird_output_positions', array('after') ), //before, after or both
                 )
             );
         }
 
-        return $this->options;
+        return $this->output_options;
+    }
+    
+    
+    function get_button_options( $args, $template )
+    {
+        return apply_filters( 'sharebird_buttons', array(
+            'facebook' => array(
+                'name' => 'Facebook',
+                'data_attributes' => array(
+                    'text'      => 'get_share_text',
+                )
+            ),
+            'twitter' => array(
+                'name' => 'Twitter',
+                'data_attributes' => array(
+                    'text'      => 'get_share_text',
+                    'via'       => 'get_username',
+                    'related'   => 'get_author',
+                )
+            ),
+            'linkedin' => array(
+                'name' => 'Twitter',
+                'data_attributes' => array(
+                    'text'      => 'get_share_text',
+                    //'referer'   => 'get_username',
+                    'related'   => 'get_author',
+                )
+            ),
+            'googleplus' => array(
+                'name' => 'Twitter',
+                'data_attributes' => array(
+                    'text'      => 'get_share_text',
+                )
+            )
+        ), 
+        $args, $template);
     }
 
 
@@ -217,34 +248,40 @@ class ShareBird
      */
     function include_template( $template, $args = array() )
     {
-        //TODO: No global loop dependency please!
-        //global $post;
+        //If not set, set to get_post() default (null)
+        if( !isset($args['post_id']) )
+        {
+            $args['post_id'] = null;
+        }
         
-        if( !empty($args['post_id']))
-        {
-            $post = get_post($args['post_id']);
-        }
-        else
-        {
-            //Get current post (the_loop)
-            $post = get_post();
-        }
+        $post = get_post($args['post_id']);
         
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
 
         extract(apply_filters('sharebird_post_data', $args, $template));
 
+        $button_options = ShareBird()->get_button_options($args, $template);
+        
         //Look in theme folder first, then plugin folder
         if(locate_template($template) === '')
+        {
             include SHAREBIRD_PLUGIN_PATH . 'templates/' . $template;
+        }
         else
+        {
             include locate_template($template);
+        }
     }
 
+    /**
+     * 
+     * @param type $content
+     * @return string
+     */
     function add_to_content( $content )
     {
-        $options = $this->get_options();
+        $options = $this->get_output_options();
         ob_start();
 
         $this->output_buttons();
@@ -267,44 +304,123 @@ class ShareBird
         return $content;
     }
     
+    function get_data_attributes($service, $post_id = 0, $button_options = array())
+    {
+        if(empty($button_options))
+        {
+            $button_options = $this->get_button_options($service, $post_id);
+        }
+        
+        if(!isset($button_options[$service]['data_attributes']) && !is_array($button_options[$service]['data_attributes']))
+        {
+            //error
+            return FALSE;
+        }
+        
+        $attributes_string = 'data-url="' . get_permalink($post_id) . '" data-basecount="0" data-sharetype="' . $service . '"';
+        
+        foreach($button_options[$service]['data_attributes'] AS $attribute => $callback)
+        {
+            $attributes_string .= ' data-'.$attribute.'="'.call_user_func(array($this, $callback), $service, $post_id).'"';
+        }
+        
+        return $attributes_string;
+        
+        
+                
+                
+            /*
+        'linkedin' => array(
+            'name' => 'Twitter',
+            'data_attributes' => array(
+                'text'      => 'get_share_text',
+                'referer'   => 'get_username',
+                'related'   => 'get_author',
+            )
+        ),
+                */
+    }
+    
+    
     /**
-     * Wrapper for getting post title. Adds filters.
+     * Wrapper for getting the share text. Adds filters.
      *
-     * @param $service
-     * @param int $id
-     * @return mixed|void
+     * @param string $service
+     * @param int $post_id
+     * @return string Title / Share text
      */
-    function get_post_title($service, $id = 0)
+    function get_share_text($service, $post_id = 0)
     {
         //General filter
-        $title_value = apply_filters("sharebird_post_title", get_the_title($id));
+        $title_value = apply_filters("sharebird_post_title", get_the_title($post_id), $post_id);
 
         //Service-specific filter
-        return apply_filters("sharebird_{$service}_post_title", $title_value);
+        return apply_filters("sharebird_{$service}_post_title", $title_value, $post_id);
     }
 
     /**
      * Wrapper for getting post author. Adds filters.
-     * TODO: get_the_author() works only in the loop. This is not great as share buttons may be used outside the main loop.
      *
-     * @param $service
-     * @return mixed|void
+     * @param string $service
+     * @param int $post_id
+     * @return string Title / Share text
      */
-    function get_author($service)
+    function get_author($service, $post_id = 0)
     {
         //General filter
-        $author_value = apply_filters("sharebird_author", get_the_author());
-
+        $author_value = apply_filters("sharebird_author", get_the_author_meta('display_name', $post_id), $post_id);
+        
         //Service-specific filter
-        return apply_filters("sharebird_{$service}_author", $author_value);
+        return apply_filters("sharebird_{$service}_author", $author_value, $post_id);
+    }
+    /**
+     * Wrapper for getting post author's username. Adds filters.
+     *
+     * @param string $service
+     * @param int $post_id
+     * @return string Title / Share text
+     */
+    function get_username($service, $post_id = 0)
+    {
+        $allowed = array(
+            //Should we add Facebook and linkedin fields to user profile and user meta? Feels a little out of scope
+            //http://justintadlock.com/archives/2009/09/10/adding-and-using-custom-user-profile-fields
+            'googleplus', 'twitter', 
+            
+            'linkedin'
+        );
+        
+        if( !in_array($service, $allowed))
+        {
+            if ( WP_DEBUG ) {
+                trigger_error( sprintf( __('The service "%1$s" is not allowed in get_username() in ShareBird.'), $service ), E_USER_NOTICE );	
+            }
+            return false;
+        }
+        
+        //General filter
+        $author_value = apply_filters("sharebird_author", get_the_author_meta($service, $post_id), $post_id);
+        
+        //Service-specific filter
+        return apply_filters("sharebird_{$service}_author", $author_value, $post_id);
     }
     
-    function get_counts()
+    
+    //Is this method needed? Will we store share counts in database?
+    function get_counts($service = '', $post_id = 0)
     {
         global $post;
 	    $post = get_post( $post );
         
         $counts = get_post_meta($post->ID, 'sharebird_counts', true);
+        
+        if( !empty($service) && array_key_exists($service, $counts) )
+        {
+            return $counts[$service];
+        }
+        
+        return $counts;
+        
         
         return array(
             'facebook' => 0,
@@ -314,7 +430,7 @@ class ShareBird
         );
     }
     
-    
+    //Is this method needed? Will we store share counts in database?
     function ajax_set_count() {
         check_ajax_referer( 'sharebird-set-post-count', 'nonce' );
         
@@ -322,6 +438,8 @@ class ShareBird
 
         die;
     }
+    
+    //Is this method needed? Will we store share counts in database?
     function set_count($post_id, $counts)
     {
         //TODO: Add validation/sanitation
@@ -333,7 +451,7 @@ class ShareBird
         };
     }
 
-    
+    //Should we support basecount?
     function get_basecount( $type )
     {
         if(isset($this->options['buttons'][$type]['basecount']))
