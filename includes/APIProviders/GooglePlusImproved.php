@@ -6,6 +6,7 @@ $url = isset($_GET['url']) ?  $_GET['url'] : null;
 
 if($url !== null)
 {
+    //FIXME: Needs to be cached somehow
     $raw_share_button = file_get_contents('https://plusone.google.com/_/+1/fastbutton?url=' . urlencode($url));
 
     if($raw_share_button)

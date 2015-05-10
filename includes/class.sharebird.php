@@ -5,7 +5,7 @@ if(!class_exists('ShareBird'))
 class ShareBird
 {
     /**
-     * Plugin version, used for autoatic updates and for cache-busting of style and script file references.
+     * Plugin version, used for automatic updates and for cache-busting of style and script file references.
      *
      * @since    0.1.0
      * @var     string
@@ -135,15 +135,17 @@ class ShareBird
 
     /**
      * Wrapper for getting post author. Adds filters.
-     * TODO: get_the_author() works only in the loop. This is not great as share buttons may be used outside the main loop.
      *
      * @param $service
      * @return mixed|void
      */
-    function get_author($service)
+    function get_author($service, $id)
     {
+        $post = get_post($id);
+        $author = get_user_by('id', $post->post_author);
+
         //General filter
-        $author_value = apply_filters("sharebird_author", get_the_author());
+        $author_value = apply_filters("sharebird_author", apply_filters('the_author', is_object($author) ? $author->display_name : null));
 
         //Service-specific filter
         return apply_filters("sharebird_{$service}_author", $author_value);
@@ -243,11 +245,15 @@ class ShareBird
      */
     function include_template( $template, $args = array() )
     {
-        //TODO: No global loop dependency please!
-        global $post;
+        //Override post if specified
+        if(isset($args['post_id']))
+            $post = get_post($args['post_id']);
+        else
+            global $post;
 
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
+
 
         extract(apply_filters('sharebird_post_data', $args, $template));
 
@@ -285,12 +291,15 @@ class ShareBird
     
     
     
-    function get_counts()
+    function get_counts($id = 0)
     {
-        global $post;
-	    $post = get_post( $post );
+        if($id !== 0)
+            $post = get_post($id);
+        else
+            $post = get_post(get_the_ID());
         
         $counts = get_post_meta($post->ID, 'sharebird_counts', true);
+        var_dump($counts);
         
         return array(
             'facebook' => 0,
@@ -331,30 +340,35 @@ class ShareBird
             $basecount = 0;
         }
         
-	return apply_filters( 'sharebird_get_basecount', $basecount, $type );
+	    return apply_filters( 'sharebird_get_basecount', $basecount, $type );
     }
     
     public function enqueue_styles()
     {
         wp_enqueue_style($this->plugin_slug . '-public-styles', SHAREBIRD_PLUGIN_URL . 'assets/css/public.css', array(), self::VERSION);
     }
+
     public function enqueue_scripts()
     {
         wp_enqueue_script($this->plugin_slug . '-public-sctipts', SHAREBIRD_PLUGIN_URL . 'assets/js/public.js', array(), self::VERSION);
-        wp_enqueue_script('simplesharebuttons', SHAREBIRD_PLUGIN_URL . 'assets/js/jquery.simplesharebuttons.js', array(), self::VERSION);
-        
+
+        wp_enqueue_script('sharebird_socialjs', SHAREBIRD_PLUGIN_URL . 'assets/js/jquery.socialjs.js', array(), self::VERSION);
         wp_localize_script($this->plugin_slug . '-public-sctipts', 'sharebird_options', array(
             'fetchCounts'               => $this->get_fetch_count(),
-            'GooglePlusAPIProviderURI'  => admin_url('/admin-ajax.php') . '?action=get_googleplus', //TODO: Implement check for check_ajax_referer();
-            'ajaxURL'                  => admin_url('/admin-ajax.php'), //Not used
-            'setCountNonce'           => wp_create_nonce("sharebird-set-post-count"), //Not used
+            'GooglePlusAPIProviderURI'  => plugins_url('APIProviders/GooglePlusImproved.php', __FILE__),
+            'ajaxURL'                  => admin_url('/admin-ajax.php'),
+            'setCountNonce'           => wp_create_nonce("sharebird-set-post-count")
         ));
     }
-    
+
+    /**
+     * FIXME: Implement
+     *
+     * @return bool
+     */
     function get_fetch_count()
     {
         //return false;
-    
         return true;
     }
     
