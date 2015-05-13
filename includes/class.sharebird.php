@@ -253,9 +253,8 @@ class ShareBird
 
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
-
-
-        extract(apply_filters('sharebird_post_data', $args, $template));
+			
+        $data = apply_filters('sharebird_post_data', $args, $template);
 
         //Look in theme folder first, then plugin folder
         if(locate_template($template) === '')
