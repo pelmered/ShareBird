@@ -2,6 +2,11 @@
 (function ($) {
 	"use strict";
 	$(function () {
+
+            $('.sharebird').socialjs({
+                GooglePlusAPIProvider: sharebird_options.GooglePlusAPIProviderURI
+            });
+            /*
             $('.sharebird').simplesharebuttons({
                 fetchCounts: sharebird_options.fetchCounts,
                 GooglePlusAPIProvider: sharebird_options.GooglePlusAPIProviderURI
@@ -32,8 +37,9 @@
                     }); 
                     
                 }
-                */
+
             });
+             */
     
 	});
 }(jQuery));
