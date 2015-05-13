@@ -253,7 +253,7 @@ class ShareBird
 
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
-			
+
         $data = apply_filters('sharebird_post_data', $args, $template);
 
         //Look in theme folder first, then plugin folder
@@ -298,8 +298,7 @@ class ShareBird
             $post = get_post(get_the_ID());
         
         $counts = get_post_meta($post->ID, 'sharebird_counts', true);
-        var_dump($counts);
-        
+
         return array(
             'facebook' => 0,
             'twitter' => 0,
