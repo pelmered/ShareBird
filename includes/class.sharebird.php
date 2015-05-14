@@ -219,12 +219,17 @@ class ShareBird
      */
     function output_buttons( $args = array() )
     {
-        if( empty( $args ) || !isset( $args['template_name'] ) || empty( $args['template_name'] ) )
+        if( !is_array( $args ))
         {
-            $args['template_name'] = 'sharebird-buttons.php';
+            $args = array();
         }
 
-        $this->include_template( $args['template_name'], $args );
+        if( empty( $args ) || !isset( $args['template'] ) || empty( $args['template'] ) )
+        {
+            $args['template'] = 'sharebird-buttons.php';
+        }
+
+        $this->include_template( $args['template'], $args );
     }
 
     /**
@@ -442,132 +447,6 @@ class ShareBird
         load_textdomain($domain, trailingslashit(WP_LANG_DIR) .'plugins/' . $domain . '-' . $locale . '.mo');
 
         load_plugin_textdomain($domain, FALSE, basename(dirname(__FILE__)) . '/languages');
-    }
-    
-    /**
-     * Fired when the plugin is activated.
-     *
-     * @since    0.1.0
-     *
-     * @param    boolean    $network_wide    True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
-     */
-    public function activate($network_wide)
-    {
-        if (function_exists('is_multisite') && is_multisite())
-        {
-            if ($network_wide)
-            {
-                // Get all blog ids
-                $blog_ids = $this->get_blog_ids();
-
-                foreach ($blog_ids as $blog_id)
-                {
-                    switch_to_blog($blog_id);
-                    $this->single_activate();
-                }
-                restore_current_blog();
-            }
-            else
-            {
-                $this->single_activate();
-            }
-        }
-        else
-        {
-            $this->single_activate();
-        }
-    }
-
-    /**
-     * Fired when the plugin is deactivated.
-     *
-     * @since    0.1.0
-     *
-     * @param    boolean    $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
-     */
-    public function deactivate($network_wide)
-    {
-        if (function_exists('is_multisite') && is_multisite())
-        {
-            if ($network_wide)
-            {
-                // Get all blog ids
-                $blog_ids = $this->get_blog_ids();
-
-                foreach ($blog_ids as $blog_id)
-                {
-                    switch_to_blog($blog_id);
-                    $this->single_deactivate();
-                }
-                restore_current_blog();
-            }
-            else
-            {
-                $this->single_deactivate();
-            }
-        }
-        else
-        {
-            $this->single_deactivate();
-        }
-    }
-
-    /**
-     * Fired when a new site is activated with a WPMU environment.
-     *
-     * @since    0.1.0
-     *
-     * @param	int	$blog_id ID of the new blog.
-     */
-    public function activate_new_site($blog_id)
-    {
-        if (1 !== did_action('wpmu_new_blog'))
-        {
-            return;
-        }
-        
-        switch_to_blog($blog_id);
-        $this->single_activate();
-        restore_current_blog();
-    }
-
-    /**
-     * Get all blog ids of blogs in the current network that are:
-     * - not archived
-     * - not spam
-     * - not deleted
-     *
-     * @since    0.1.0
-     *
-     * @return	array|false	The blog ids, false if no matches.
-     */
-    private function get_blog_ids()
-    {
-        global $wpdb;
-
-        // get an array of blog ids
-        $sql = "SELECT blog_id FROM $wpdb->blogs
-                    WHERE archived = '0' AND spam = '0'
-                    AND deleted = '0'";
-        return $wpdb->get_col($sql);
-    }
-
-    /**
-     * Fired for each blog when the plugin is activated.
-     *
-     * @since    0.1.0
-     */
-    private function single_activate()
-    {
-    }
-
-    /**
-     * Fired for each blog when the plugin is deactivated.
-     *
-     * @since    0.1.0
-     */
-    private function single_deactivate()
-    {
     }
 
     /**
