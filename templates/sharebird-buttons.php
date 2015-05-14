@@ -1,4 +1,6 @@
 <?php
+$post = $data['post'];
+$plugin_slug = $data['plugin_slug'];
 $options = ShareBird()->get_options();
 $counts = ShareBird()->get_counts($post->ID);
 ?>
