@@ -217,9 +217,14 @@ class ShareBird
      * @param string $template_name
      * @param array $args
      */
-    function output_buttons( $template_name = 'sharebird-buttons.php', $args = array() )
+    function output_buttons( $args = array() )
     {
-        $this->include_template( $template_name, $args );
+        if( empty( $args ) || !isset( $args['template_name'] ) || empty( $args['template_name'] ) )
+        {
+            $args['template_name'] = 'sharebird-buttons.php';
+        }
+
+        $this->include_template( $args['template_name'], $args );
     }
 
     /**
