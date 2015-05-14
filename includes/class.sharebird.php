@@ -60,11 +60,15 @@ class ShareBird
         
         add_action( 'wp_ajax_sharebird_set_count', array( $this, 'ajax_set_count') );
 
-        //Both logged in and unprivileged users
+        // AJAX callback to get Google+ share count
+        // Both for logged in and unprivileged users
         add_action('wp_ajax_get_googleplus', array($this, 'ajax_get_googleplus'));
         add_action('wp_ajax_nopriv_get_googleplus', array($this, 'ajax_get_googleplus'));
     }
 
+    /**
+     *
+     */
     function ajax_get_googleplus()
     {
         $url = isset($_GET['url']) ?  $_GET['url'] : null;
@@ -150,7 +154,10 @@ class ShareBird
         //Service-specific filter
         return apply_filters("sharebird_{$service}_author", $author_value);
     }
-    
+
+    /**
+     * Initialize the plugin
+     */
     function plugin_init()
     {
         $options = $this->get_options();
@@ -203,7 +210,13 @@ class ShareBird
             }
         }
     }
-    
+
+    /**
+     * Load the template that outputs the button HTML.
+     *
+     * @param string $template_name
+     * @param array $args
+     */
     function output_buttons( $template_name = 'sharebird-buttons.php', $args = array() )
     {
         $this->include_template( $template_name, $args );
@@ -245,11 +258,16 @@ class ShareBird
      */
     function include_template( $template, $args = array() )
     {
-        //Override post if specified
+        // Get post object
         if(isset($args['post_id']))
+        {
             $post = get_post($args['post_id']);
+        }
         else
-            global $post;
+        {
+            //Get current post (the_loop)
+            $post = get_post();
+        }
 
         $args['plugin_slug'] = $this->plugin_slug;
         $args['post'] = $post;
@@ -258,9 +276,13 @@ class ShareBird
 
         //Look in theme folder first, then plugin folder
         if(locate_template($template) === '')
+        {
             include SHAREBIRD_PLUGIN_PATH . 'templates/' . $template;
+        }
         else
+        {
             include locate_template($template);
+        }
     }
 
     function add_to_content( $content )
@@ -273,15 +295,16 @@ class ShareBird
         //Get output buffer and allow 3rd-party codes to filter HTML data
         $template = apply_filters( 'sharebird_template_html', ob_get_clean(), $options['output_positions'], $content );
 
+
+        //Prepend to content
         if( in_array('before', $options['output_positions']) )
         {
-            //Prepend
             $content = $template.$content;
         }
 
+        //Append to content
         if( in_array('after', $options['output_positions']) )
         {
-            //after (Append)
             $content = $content.$template;
         }
         
@@ -293,10 +316,14 @@ class ShareBird
     function get_counts($id = 0)
     {
         if($id !== 0)
+        {
             $post = get_post($id);
+        }
         else
+        {
             $post = get_post(get_the_ID());
-        
+        }
+
         $counts = get_post_meta($post->ID, 'sharebird_counts', true);
 
         return array(
@@ -321,7 +348,8 @@ class ShareBird
         
         
         
-        if ( ! update_post_meta ($post_id, 'sharebird_counts', $counts) ) { 
+        if ( ! update_post_meta ($post_id, 'sharebird_counts', $counts) )
+        {
             add_post_meta($post_id, 'sharebird_counts', $counts, true );	
         };
     }
