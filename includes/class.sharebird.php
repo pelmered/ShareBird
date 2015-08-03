@@ -143,16 +143,16 @@ class ShareBird
      * @param $service
      * @return mixed|void
      */
-    function get_author($service, $id)
+    function get_author($service, $post_id)
     {
-        $post = get_post($id);
+        $post = get_post($post_id);
         $author = get_user_by('id', $post->post_author);
 
         //General filter
-        $author_value = apply_filters("sharebird_author", apply_filters('the_author', is_object($author) ? $author->display_name : null));
+        $author_value = apply_filters("sharebird_get_author", apply_filters('the_author', is_object($author) ? $author->display_name : null), $post_id);
 
         //Service-specific filter
-        return apply_filters("sharebird_{$service}_author", $author_value);
+        return apply_filters("sharebird_{$service}_get_author", $author_value);
     }
 
     /**
