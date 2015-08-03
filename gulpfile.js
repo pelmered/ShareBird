@@ -10,10 +10,8 @@ var imagemin = require('gulp-imagemin');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var notify = require('gulp-notify');
-var livereload = require('gulp-livereload');
 var newer = require('gulp-newer');
 var del = require('del');
-var bower = require('gulp-bower');
 
 var onError = function (err) {
     console.log(err);
@@ -32,13 +30,14 @@ var paths = {
     admin: {
         src: {
             css: 'assets/scss/admin-options.scss',
-            js: 'assets/js/admin.js'
+            js: 'assets/js/admin.js',
+            img: []
         },
         dist: {
             root: 'dist/admin',
             css: 'dist/admin/css/',
-            js: 'dist/admin/js/',
-            img: 'dist/admin/img/'
+            js: 'dist/admin/js/'//,
+            //img: 'dist/admin/img/'
         },
         bower: []
     },
@@ -118,6 +117,7 @@ gulp.task('frontend-scripts', function() {
 });
 
 // JSHINT Scripts
+/* TODO: JSHINT
 gulp.task('jshint', function() {
     return gulp.src(paths.frontend.src.js)
         .pipe(plumber({ errorHandler: onError }))
@@ -136,9 +136,9 @@ gulp.task('jshint', function() {
             return file.relative + " (" + file.jshint.results.length + " errors)\n" + errors;
         }));
 });
+*/
 
-
-// Images
+// Frontend images TODO: Maybe admin images if we need that
 gulp.task('images', function() {
     return gulp.src(paths.frontend.src.img)
         .pipe(plumber({ errorHandler: onError }))
@@ -164,36 +164,25 @@ gulp.task('clean', function(cb) {
     ], cb);
 });
 
-// Install bower components
-gulp.task('bower', ['clean'], function() {
-    return bower({ cmd: 'install'});
-});
-
 // Default task
-gulp.task('default', ['clean', 'bower'], function() {
-    gulp.start('styles', 'scripts', 'images');
+gulp.task('default', ['clean'], function() {
+    gulp.start('admin-styles', 'frontend-styles', 'admin-scripts', 'frontend-scripts', 'images');
 });
-
 
 // Watch
 gulp.task('watch', ['default'], function() {
 
     // Watch .scss files
-    gulp.watch(paths.frontend.src.css, ['styles']);
+    gulp.watch(paths.admin.src.css, ['admin-styles']);
+    gulp.watch(paths.frontend.src.css, ['frontend-styles']);
 
     // Watch .js files
-    gulp.watch(paths.frontend.src.js, ['scripts', 'jshint']);
+    gulp.watch(paths.admin.src.js, ['admin-scripts']);
+    gulp.watch(paths.frontend.src.js, ['frontend-scripts']);
 
     // Watch image files
     gulp.watch(paths.frontend.src.img, ['images']);
 
     // Watch this file for changes (Might be better to just run scripts)
     gulp.watch('gulpfile.js', ['default']);
-
-    // Create LiveReload server
-    livereload.listen();
-
-    // Watch files in the frontend directory and reload browser when files change
-    gulp.watch([paths.frontend.dist.root]).on('change', livereload.changed);
-
 });

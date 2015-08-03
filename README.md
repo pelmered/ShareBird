@@ -217,7 +217,6 @@ After you have NPM installed, just navigate to the ShareBird folder and run:
 ```
 npm install
 bower install
-gulp
 gulp watch
 ```
 
