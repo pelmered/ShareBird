@@ -19,19 +19,12 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-/*
-//For debugging
-error_reporting(E_ALL);
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', 1);
-*/
-
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-$class_name = 'ShareBird';
+$sb_class_name = 'ShareBird';
 
 if( !defined('SHAREBIRD_PLUGIN_NAME') )
 {
@@ -56,7 +49,7 @@ if( !defined('SHAREBIRD_PLUGIN_URL'))
 
 add_action( 'plugins_loaded', 'ShareBird' );
 
-if( !class_exists( $class_name ) && !function_exists( $class_name ))
+if( !class_exists( $sb_class_name ) && !function_exists( $sb_class_name ))
 {
     function ShareBird()
     {
@@ -67,6 +60,6 @@ if( !class_exists( $class_name ) && !function_exists( $class_name ))
 }
 
 // Register hooks that are fired when the plugin is activated, deactivated, and uninstalled, respectively.
-register_activation_hook(__FILE__, array($class_name(), 'activate'));
+register_activation_hook(__FILE__, array($sb_class_name(), 'activate'));
 //Deletes all data if plugin deactivated
-register_deactivation_hook(__FILE__, array($class_name(), 'deactivate'));
+register_deactivation_hook(__FILE__, array($sb_class_name(), 'deactivate'));
