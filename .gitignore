@@ -1,4 +1,2 @@
-
-
-includes/admin*
-
+node_modules/
+bower_components/

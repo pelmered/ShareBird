@@ -207,5 +207,18 @@ add_action( 'wp_enqueue_scripts', function()
 	//Add your own custom script from theme folder
 	wp_enqueue_style( 'my-sharebird-styles', get_template_directory_uri() . '/css/my-styles.css' );
 });
+
+## Development
+
+To participate in ShareBird development, you need to setup NPM, Bower and Gulp.
+
+After you have NPM installed, just navigate to the ShareBird folder and run:
+
+```
+npm install
+bower install
+gulp
+gulp watch
 ```
 
+You are now ready to contribute to Sharebird!
