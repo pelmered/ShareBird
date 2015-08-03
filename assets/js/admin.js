@@ -3,6 +3,6 @@
 (function ($) {
 	"use strict";
 	$(function () {
-		//Code here
+		//Code here!
 	});
 }(jQuery));
