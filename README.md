@@ -47,7 +47,7 @@ You can customize which buttons are shown and where using filters.
 
 ### Hooks - actions and filters
 
-####Displayed buttons
+#### Displayed buttons
 
 You can remove services using the following filter:
 
@@ -61,7 +61,7 @@ add_filter( 'sharebird_buttons', function( $buttons )
 
 *Default value: array('facebook', 'twitter', 'linkedin', 'googleplus')*
 
-####Button output locations
+#### Button output locations
 
 The plugin can display share buttons before the post content/excerpt, after, or both.
 
@@ -76,7 +76,7 @@ add_filter( 'sharebird_output_positions', function( $positions )
 
 *Default value: array('after')*
 
-####Output conditionals
+#### Output conditionals
 
 You can use [WordPress Conditional Tags](http://codex.wordpress.org/Conditional_Tags) to select where the output should be displayed. 
 Example:
@@ -90,7 +90,7 @@ add_filter( 'sharebird_output_conditionals', function( $conditionals )
 
 *Default value: array('is_front_page', 'is_home', 'is_single', 'is_page', 'is_post_type_archive', 'is_singular')*
 
-####Output by post type
+#### Output by post type
 
 If you have selected is_post, is_page or is_singular in the output conditionals, you can use a filter to specify which post types the buttons
 are displayed for:
@@ -104,7 +104,7 @@ add_filter( 'sharebird_output_post_types', function( $post_types )
 
 *Default value: array('post', 'page')*
 
-#####Manual output in your theme
+##### Manual output in your theme
 
 You can disable the output from the plugin altogether using:
 
@@ -123,11 +123,11 @@ if( class_exists( 'ShareBird' ) )
 }
 ```
 
-####Customizing values / metadata
+#### Customizing values / metadata
 
 To customize the metadata(title, author name etc.) that are passed to the share popup you can change this in the tamplate file, or by using filters like this.
 
-#####Customizing title
+##### Customizing title
 Add tags at the end of the share text.
 
 ```php
@@ -157,7 +157,7 @@ add_filter( 'sharebird_facebook_get_post_title', function( $post_title, $post_id
 	return $post_title;
 }, 10, 2);
 ```
-#####Customizing author
+##### Customizing author
 
 ```php
 add_filter( 'sharebird_get_author', function( $post_author, $post_id )
@@ -177,7 +177,7 @@ add_filter( 'sharebird_twitter_get_author', function( $post_author, $post_id )
 }, 10, 2);
 ```
 
-###Change HTML output (Templating)
+### Change HTML output (Templating)
 
 Copy the default template, sharebird-buttons.php from the plugins templates/ folder to your themes root folder.
 
@@ -195,7 +195,7 @@ ShareBird()->output_buttons( 'folder/my_button_template.php' );
 
 This will use the template located in ` /folder/my_button_template.php `
 
-###Change CSS output
+### Change CSS output
 
 It is off course very simple to just extend the default styles to make them look the way you want. But if you want to include your own styles that can be made like this:
 
