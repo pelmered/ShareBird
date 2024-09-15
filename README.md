@@ -10,7 +10,7 @@ Based on [SimpleShareButtons](https://github.com/SubZane/SimpleShareButtons) by 
 __Please note that this plugin is stil under early development and the API(hooks and filters) may change without any notice untill we release version 1.0.0__
 
 
-####Default styling
+#### Default styling
 
 ![Demo](https://raw.githubusercontent.com/pelmered/ShareBird/master/simplesharebuttons.png "This is what the default output looks like")
 
