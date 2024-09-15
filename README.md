@@ -11,6 +11,7 @@ __Please note that this plugin is stil under early development and the API(hooks
 
 
 ####Default styling
+
 ![Demo](https://raw.githubusercontent.com/pelmered/ShareBird/master/simplesharebuttons.png "This is what the default output looks like")
 
 [Screenshot1 - TwentyThriteen, default styling](https://raw.githubusercontent.com/pelmered/ShareBird/master/assets/screenshot-1.png "Screenshot1 - TwentyThriteen, default styling]")
