@@ -1,0 +1,16 @@
+{
+  "name": "ShareBird",
+  "version": "0.0.1",
+  "homepage": "https://github.com/pelmered/ShareBird",
+  "authors": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "socialjs": "~0.6.1"
+  }
+}
